@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot test 1`] = `
+Object {
+  "Parameters": Object {
+    "BootstrapVersion": Object {
+      "Default": "/cdk-bootstrap/hnb659fds/version",
+      "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+  },
+  "Resources": Object {
+    "sampleLambdaBA9DE42C": Object {
+      "DependsOn": Array [
+        "sampleLambdaServiceRole07311550",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "S3Bucket": Object {
+            "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
+          },
+          "S3Key": "3ab6c3683104e06d41f081b53946e36497ca53edc457b5d921a41ecc47e45ec1.zip",
+        },
+        "Environment": Object {
+          "Variables": Object {
+            "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+          },
+        },
+        "Handler": "index.handler",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "sampleLambdaServiceRole07311550",
+            "Arn",
+          ],
+        },
+        "Runtime": "nodejs14.x",
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "sampleLambdaServiceRole07311550": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+  },
+  "Rules": Object {
+    "CheckBootstrapVersion": Object {
+      "Assertions": Array [
+        Object {
+          "Assert": Object {
+            "Fn::Not": Array [
+              Object {
+                "Fn::Contains": Array [
+                  Array [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                  ],
+                  Object {
+                    "Ref": "BootstrapVersion",
+                  },
+                ],
+              },
+            ],
+          },
+          "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI.",
+        },
+      ],
+    },
+  },
+}
+`;
