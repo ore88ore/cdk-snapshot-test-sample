@@ -11,9 +11,11 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.86",
     "@types/jest": "^26.0.10",
     "@types/node": "10.17.27",
     "aws-cdk": "2.0.0",
+    "aws-sdk": "^2.1044.0",
     "esbuild": "^0.14.2",
     "jest": "^26.4.2",
     "prettier": "2.5.1",
