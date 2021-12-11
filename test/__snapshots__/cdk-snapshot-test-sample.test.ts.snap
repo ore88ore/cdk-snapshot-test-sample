@@ -2,6 +2,42 @@
 
 exports[`snapshot test 1`] = `
 Object {
+  "Outputs": Object {
+    "sampleTableName": Object {
+      "Export": Object {
+        "Name": "sampleTableName",
+      },
+      "Value": Object {
+        "Ref": "sampleTable0D61001F",
+      },
+    },
+    "sampleapiEndpoint5691AF90": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "https://",
+            Object {
+              "Ref": "sampleapiAA5ED7E4",
+            },
+            ".execute-api.",
+            Object {
+              "Ref": "AWS::Region",
+            },
+            ".",
+            Object {
+              "Ref": "AWS::URLSuffix",
+            },
+            "/",
+            Object {
+              "Ref": "sampleapiDeploymentStageprod1B60AC82",
+            },
+            "/",
+          ],
+        ],
+      },
+    },
+  },
   "Parameters": Object {
     "BootstrapVersion": Object {
       "Default": "/cdk-bootstrap/hnb659fds/version",
@@ -12,6 +48,7 @@ Object {
   "Resources": Object {
     "sampleLambdaBA9DE42C": Object {
       "DependsOn": Array [
+        "sampleLambdaServiceRoleDefaultPolicy8C711846",
         "sampleLambdaServiceRole07311550",
       ],
       "Properties": Object {
@@ -19,11 +56,14 @@ Object {
           "S3Bucket": Object {
             "Fn::Sub": "cdk-hnb659fds-assets-\${AWS::AccountId}-\${AWS::Region}",
           },
-          "S3Key": "3ab6c3683104e06d41f081b53946e36497ca53edc457b5d921a41ecc47e45ec1.zip",
+          "S3Key": "[HASH REMOVED]",
         },
         "Environment": Object {
           "Variables": Object {
             "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1",
+            "TABLE_NAME": Object {
+              "Ref": "sampleTable0D61001F",
+            },
           },
         },
         "Handler": "index.handler",
@@ -67,6 +107,261 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Role",
+    },
+    "sampleLambdaServiceRoleDefaultPolicy8C711846": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "dynamodb:BatchGetItem",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator",
+                "dynamodb:Query",
+                "dynamodb:GetItem",
+                "dynamodb:Scan",
+                "dynamodb:ConditionCheckItem",
+              ],
+              "Effect": "Allow",
+              "Resource": Array [
+                Object {
+                  "Fn::GetAtt": Array [
+                    "sampleTable0D61001F",
+                    "Arn",
+                  ],
+                },
+                Object {
+                  "Ref": "AWS::NoValue",
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "sampleLambdaServiceRoleDefaultPolicy8C711846",
+        "Roles": Array [
+          Object {
+            "Ref": "sampleLambdaServiceRole07311550",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "sampleTable0D61001F": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "AttributeDefinitions": Array [
+          Object {
+            "AttributeName": "id",
+            "AttributeType": "S",
+          },
+        ],
+        "BillingMode": "PAY_PER_REQUEST",
+        "KeySchema": Array [
+          Object {
+            "AttributeName": "id",
+            "KeyType": "HASH",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "sampleapiAA5ED7E4": Object {
+      "Properties": Object {
+        "Name": "sample-api",
+      },
+      "Type": "AWS::ApiGateway::RestApi",
+    },
+    "sampleapiAccount074F5E10": Object {
+      "DependsOn": Array [
+        "sampleapiAA5ED7E4",
+      ],
+      "Properties": Object {
+        "CloudWatchRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "sampleapiCloudWatchRole14C66026",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ApiGateway::Account",
+    },
+    "sampleapiCloudWatchRole14C66026": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "apigateway.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "sampleapiDeployment9D4ABE32a81615675f70911410286643a5514148": Object {
+      "DependsOn": Array [
+        "sampleapiGET5F5EB503",
+      ],
+      "Properties": Object {
+        "Description": "Automatically created by the RestApi construct",
+        "RestApiId": Object {
+          "Ref": "sampleapiAA5ED7E4",
+        },
+      },
+      "Type": "AWS::ApiGateway::Deployment",
+    },
+    "sampleapiDeploymentStageprod1B60AC82": Object {
+      "Properties": Object {
+        "DeploymentId": Object {
+          "Ref": "sampleapiDeployment9D4ABE32a81615675f70911410286643a5514148",
+        },
+        "RestApiId": Object {
+          "Ref": "sampleapiAA5ED7E4",
+        },
+        "StageName": "prod",
+      },
+      "Type": "AWS::ApiGateway::Stage",
+    },
+    "sampleapiGET5F5EB503": Object {
+      "Properties": Object {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "GET",
+        "Integration": Object {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":apigateway:",
+                Object {
+                  "Ref": "AWS::Region",
+                },
+                ":lambda:path/2015-03-31/functions/",
+                Object {
+                  "Fn::GetAtt": Array [
+                    "sampleLambdaBA9DE42C",
+                    "Arn",
+                  ],
+                },
+                "/invocations",
+              ],
+            ],
+          },
+        },
+        "ResourceId": Object {
+          "Fn::GetAtt": Array [
+            "sampleapiAA5ED7E4",
+            "RootResourceId",
+          ],
+        },
+        "RestApiId": Object {
+          "Ref": "sampleapiAA5ED7E4",
+        },
+      },
+      "Type": "AWS::ApiGateway::Method",
+    },
+    "sampleapiGETApiPermissionMyTestStacksampleapiCE427428GET223FF364": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "sampleLambdaBA9DE42C",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "sampleapiAA5ED7E4",
+              },
+              "/",
+              Object {
+                "Ref": "sampleapiDeploymentStageprod1B60AC82",
+              },
+              "/GET/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "sampleapiGETApiPermissionTestMyTestStacksampleapiCE427428GETA9A13D87": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "sampleLambdaBA9DE42C",
+            "Arn",
+          ],
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":execute-api:",
+              Object {
+                "Ref": "AWS::Region",
+              },
+              ":",
+              Object {
+                "Ref": "AWS::AccountId",
+              },
+              ":",
+              Object {
+                "Ref": "sampleapiAA5ED7E4",
+              },
+              "/test-invoke-stage/GET/",
+            ],
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
     },
   },
   "Rules": Object {

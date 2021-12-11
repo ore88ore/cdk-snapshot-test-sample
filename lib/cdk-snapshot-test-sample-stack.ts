@@ -1,4 +1,4 @@
-import { RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
+import { CfnOutput, RemovalPolicy, Stack, StackProps } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
@@ -14,6 +14,10 @@ export class CdkSnapshotTestSampleStack extends Stack {
       partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       removalPolicy: RemovalPolicy.DESTROY,
+    });
+    new CfnOutput(this, "sampleTableName", {
+      value: sampleTable.tableName,
+      exportName: "sampleTableName",
     });
 
     // Lambda

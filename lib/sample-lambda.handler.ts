@@ -10,9 +10,13 @@ export const handler = async (
       TableName: process.env.TABLE_NAME as string,
     })
     .promise();
+  const responseBody = {
+    count: res.Count ?? 0,
+    samples: res.Items ?? [],
+  };
 
   return {
     statusCode: 200,
-    body: JSON.stringify(res.Items ?? []),
+    body: JSON.stringify(responseBody),
   };
 };
