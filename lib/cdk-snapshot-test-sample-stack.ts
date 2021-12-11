@@ -25,6 +25,7 @@ export class CdkSnapshotTestSampleStack extends Stack {
       entry: "lib/sample-lambda.handler.ts",
       environment: {
         TABLE_NAME: sampleTable.tableName,
+        FAIL_TEST: "test",
       },
     });
     sampleTable.grantReadData(sampleLambda);
